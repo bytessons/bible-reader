@@ -19,7 +19,6 @@ export const UI_TEXT = {
     swipeHint: 'swipe up for next verse',
     noVerses: 'No verses found',
     backToBooks: 'All books',
-    verse: "Verse"
   },
   swe_fol: {
     chooseBook: 'Välj en',
@@ -32,7 +31,6 @@ export const UI_TEXT = {
     swipeHint: 'svep uppåt för nästa vers',
     noVerses: 'Inga verser hittades',
     backToBooks: 'Alla böcker',
-    verse: "Vers"
   },
 }
 
@@ -85,8 +83,8 @@ function getVerses(data) {
   return []
 }
 
-export function useBible() {
-  const [translation, setTranslation] = useState('eng_kjv')
+export function useBible(initialTranslation = 'eng_kjv') {
+  const [translation, setTranslation] = useState(initialTranslation)
   const [books, setBooks] = useState([])
   const [verses, setVerses] = useState([])
   const [versesLoading, setVersesLoading] = useState(false)

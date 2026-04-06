@@ -3,10 +3,11 @@ import { UI_TEXT } from '../hooks/useBible'
 
 export default function VerseReader({
   book, chapter, totalChapters, verses, loading,
-  onBack, onChapterChange, translation,
+  onBack, onChapterChange, onVerseChange, translation,
+  initialVerseIndex = 0,
 }) {
   const t = UI_TEXT[translation]
-  const [verseIndex, setVerseIndex] = useState(0)
+  const [verseIndex, setVerseIndex] = useState(initialVerseIndex)
   const [editingVerse, setEditingVerse] = useState(false)
   const [editingChapter, setEditingChapter] = useState(false)
   const [jumpVerseVal, setJumpVerseVal] = useState('')
@@ -23,7 +24,7 @@ export default function VerseReader({
 
   // Reset to verse 1 whenever book or chapter changes
   useEffect(() => {
-    setVerseIndex(0)
+    setVerseIndex(initialVerseIndex)
     setAnimDir(null)
   }, [chapter, book])
 
@@ -48,7 +49,11 @@ export default function VerseReader({
         animating.current = true
         setAnimDir('up')
         setTimeout(() => {
-          setVerseIndex(i => i + 1)
+          setVerseIndex(i => {
+            const next = i + 1
+            onVerseChange?.(next)
+            return next
+          })
           setAnimDir(null)
           animating.current = false
         }, 200)
@@ -60,7 +65,11 @@ export default function VerseReader({
         animating.current = true
         setAnimDir('down')
         setTimeout(() => {
-          setVerseIndex(i => i - 1)
+          setVerseIndex(i => {
+            const prev = i - 1
+            onVerseChange?.(prev)
+            return prev
+          })
           setAnimDir(null)
           animating.current = false
         }, 200)
@@ -118,7 +127,7 @@ export default function VerseReader({
     const target = parseInt(jumpVerseVal)
     if (!isNaN(target)) {
       const idx = verses.findIndex(v => v.number === target)
-      if (idx !== -1) setVerseIndex(idx)
+      if (idx !== -1) { setVerseIndex(idx); onVerseChange?.(idx) }
     }
     setEditingVerse(false)
   }
